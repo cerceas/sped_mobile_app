@@ -128,7 +128,7 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Card(
-                  color: Colors.grey.shade600,
+                  color: hexToColor("#2C5F2D"),
                   elevation: 3,
                   child: Container(
                     height: 50,
