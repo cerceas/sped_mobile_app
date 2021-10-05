@@ -25,7 +25,7 @@ dependencies:
     sdk: flutter
   mysql1: ^0.19.2
   syncfusion_flutter_charts: ^19.3.43
-
+  intl: ^0.17.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -50,6 +50,7 @@ flutter:
     - assets/image/woman.png
     - assets/image/loudspeaker.png
     - assets/image/bagongNLogo.png
+    - assets/Font/
 
   #   - images/a_dot_ham.jpeg
 
@@ -64,12 +65,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/Font/Roboto-Regular.ttf
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

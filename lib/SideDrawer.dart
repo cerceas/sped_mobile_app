@@ -34,16 +34,12 @@ class _SideDrawerState extends State<SideDrawer> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Image.asset(
-                          "assets/image/woman.png",
-                          width: 100,
-                          height: 100,
+                          "assets/image/bagongNLogo.png",
+                          width: 120,
+                          height: 120,
                         ),
                       ),
                     ),
-                    Text(
-                      "Parent",
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    )
                   ],
                 ),
               ),

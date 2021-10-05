@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:sped_mobile_app/SideDrawer.dart';
 import 'package:sped_mobile_app/tool.dart';
@@ -63,7 +64,10 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
         if(j==0){
           dataList[i][j] = "${row[2]}";
         }else if(j==1){
-          dataList[i][j] = "${row[6]}";
+          DateTime _datetime=row[6];
+          DateFormat formatter = DateFormat.yMMMMd('en_US');
+          String formatted = formatter.format(_datetime);
+          dataList[i][j] = "$formatted";
         }else if(j==2){
           dataList[i][j] = "${row[4]}";
         }else if(j==3){
@@ -99,7 +103,10 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
         if(j==0){
           dataList[i][j] = "${row[2]}";
         }else if(j==1){
-          dataList[i][j] = "${row[6]}";
+          DateTime _datetime=row[6];
+          DateFormat formatter = DateFormat.yMMMMd('en_US');
+           String formatted = formatter.format(_datetime);
+          dataList[i][j] = "$formatted";
         }else if(j==2){
           dataList[i][j] = "${row[4]}";
         }else if(j==3){
@@ -137,7 +144,7 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
                       child: Text(
                         "ADMIN ANNOUNCEMENT",
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.black,fontFamily: "Roboto",
                             fontSize: getProportionateScreenWidth(28, context),
                             fontWeight: FontWeight.bold),
                       ),
@@ -190,7 +197,7 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Card(
-                  color: Colors.grey.shade600,
+                  color: hexToColor("#2C5F2D"),
                   elevation: 3,
                   child: Container(
 
@@ -198,7 +205,7 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
                       child: Text(
                         "ANNOUNCEMENT FROM TEACHER",
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.black,fontFamily: "Roboto",
                             fontSize:  getProportionateScreenWidth(28, context),
                             fontWeight: FontWeight.bold),textAlign: TextAlign.center,
                       ),
