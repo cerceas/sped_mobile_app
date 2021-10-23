@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sped_mobile_app/Attendance/AttendanceScreen.dart';
 import 'package:sped_mobile_app/Dashboard/DashboardScreen.dart';
 import 'package:sped_mobile_app/LogAndReg/LoginScreen.dart';
+import 'package:sped_mobile_app/TeacherConsulation/chatpage.dart';
 import 'package:sped_mobile_app/tool.dart';
 
 class SideDrawer extends StatefulWidget {
@@ -87,7 +88,20 @@ class _SideDrawerState extends State<SideDrawer> {
             CustomListTile(
               title: "Teacher Consultation",
               icon: Icons.mail_outline_rounded,
-              onTap: () {},
+              onTap: () {
+                widget.state == "Teacher Consultation"
+                    ? Navigator.of(context).pop()
+                    : Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (c, a1, a2) => ChartPage(),
+                    transitionsBuilder: (c, anim, a2, child) =>
+                        FadeTransition(opacity: anim, child: child),
+                    transitionDuration: Duration(milliseconds: 500),
+                  ),
+                );
+
+              },
             ),
             SizedBox(
               height: getProportionateScreenWidth(20, context),

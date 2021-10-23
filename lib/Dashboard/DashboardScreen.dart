@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:sped_mobile_app/Dashboard/item_list.dart';
 import 'package:sped_mobile_app/SideDrawer.dart';
 import 'package:sped_mobile_app/tool.dart';
 
@@ -44,8 +45,10 @@ class Dashboard_body extends StatefulWidget {
 }
 
 class _Dashboard_bodyState extends State<Dashboard_body> {
-
-  Future<List> generateAdminData() async {
+  late Future<List<Item>> AdminTotaldata;
+  late Future<List<Item>> TeacherTotaldata;
+  Future<List<Item>> generateAdminData() async {
+    late List<Item> _data_item = <Item>[];
     final conn = await MySqlConnection.connect(ConnectionSettings(
       host: '10.0.2.2',
       port: 3306,
@@ -62,18 +65,23 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
     for (var row in results) {
       while (j < 5) {
         if(j==0){
+          //messagefrom
           dataList[i][j] = "${row[2]}";
         }else if(j==1){
+          //date
           DateTime _datetime=row[6];
-          DateFormat formatter = DateFormat.yMMMMd('en_US');
+          DateFormat formatter = DateFormat.MMMMd('en_US');
           String formatted = formatter.format(_datetime);
           dataList[i][j] = "$formatted";
         }else if(j==2){
+          //title
           dataList[i][j] = "${row[4]}";
         }else if(j==3){
+          //message
           dataList[i][j] = "${row[5]}";
         }
         else if(j==4){
+          //id
           dataList[i][j] = "${row[0]}";
         }
         j++;
@@ -81,10 +89,18 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
       i++;
       j = 0;
     }
-    return dataList;
+    for(int i=0;i<dataList.length;i++){
+      for(int j=0;j<1;j++){
+        print(dataList[i][j]);
+       _data_item.add(Item(expandedValue: dataList[i][j+3], headerValue: dataList[i][j+2],isExpanded: false,date: dataList[i][j+1]));
+      }
+    }
+
+    return _data_item;
   }
 
-  Future<List> generateTeacherData() async {
+  Future<List<Item>> generateTeacherData() async {
+    late List<Item> _data_item = <Item>[];
     final conn = await MySqlConnection.connect(ConnectionSettings(
       host: '10.0.2.2',
       port: 3306,
@@ -104,7 +120,7 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
           dataList[i][j] = "${row[2]}";
         }else if(j==1){
           DateTime _datetime=row[6];
-          DateFormat formatter = DateFormat.yMMMMd('en_US');
+          DateFormat formatter = DateFormat.MMMMd('en_US');
            String formatted = formatter.format(_datetime);
           dataList[i][j] = "$formatted";
         }else if(j==2){
@@ -120,159 +136,224 @@ class _Dashboard_bodyState extends State<Dashboard_body> {
       i++;
       j = 0;
     }
-    return dataList;
+    for(int i=0;i<dataList.length;i++){
+      for(int j=0;j<1;j++){
+        print(dataList[i][j]);
+        _data_item.add(Item(expandedValue: dataList[i][j+3], headerValue: dataList[i][j+2],isExpanded: false,date: dataList[i][j+1]));
+      }
+    }
+
+
+    return _data_item;
   }
+
+
+  @override
+  void initState() {
+    super.initState();
+    AdminTotaldata=generateAdminData();
+    TeacherTotaldata=generateTeacherData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: getProportionateScreenWidth(20, context),
-            vertical: getProportionateScreenWidth(10, context)),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Card(
-                  color: hexToColor("#2C5F2D"),
-                  elevation: 3,
-                  child: Container(
-                    height: 50,
-                    width: 600,
-                    child: Center(
-                      child: Text(
-                        "ADMIN ANNOUNCEMENT",
-                        style: TextStyle(
-                            color: Colors.black,fontFamily: "Roboto",
-                            fontSize: getProportionateScreenWidth(28, context),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              FutureBuilder<List>(future: generateAdminData(),
-                  builder: (context,projectSnap){
-                switch(projectSnap.connectionState){
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  default:
-                    if(projectSnap.hasData){
-                      var listdata=projectSnap.data;
-                      print(listdata![0][0]);
-                      return Card(
-                        elevation: 5,
-                        child: Container(
-                          height: 400,
-                          child: ListView.builder(
-                              itemCount: listdata.length,
-                              shrinkWrap: true,
-                              itemBuilder: (_, i) {
-                                print("item builder $i");
-                                print("JSD");
-                                return CustomListTile(
-                                  title: "${listdata[i][2]}",
-                                  message:
-                                  "${listdata[i][3]}",
-                                  date:  "${listdata[i][1]}",
-                                );
-
-                              }),
+    return  RefreshIndicator(color: Colors.white,
+    strokeWidth: 5,
+    displacement: 200,
+    edgeOffset: 20,
+    triggerMode: RefreshIndicatorTriggerMode.onEdge,
+    backgroundColor: Colors.blue,
+    onRefresh: ()  async{
+      AdminTotaldata=generateAdminData();
+      TeacherTotaldata=generateTeacherData();
+    },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16, right: 16, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "Admin Announcement",
+                          style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                         ),
-                      );
-                    }
 
-                }
-                return Container();
-              }),
-              SizedBox(
-                height: getProportionateScreenWidth(20, context),
-              ),
-              SizedBox(
-                height: getProportionateScreenWidth(20, context),
-              ),
-
-              Align(
-                alignment: Alignment.topCenter,
-                child: Card(
-                  color: hexToColor("#2C5F2D"),
-                  elevation: 3,
-                  child: Container(
-
-                    child: Center(
-                      child: Text(
-                        "ANNOUNCEMENT FROM TEACHER",
-                        style: TextStyle(
-                            color: Colors.black,fontFamily: "Roboto",
-                            fontSize:  getProportionateScreenWidth(28, context),
-                            fontWeight: FontWeight.bold),textAlign: TextAlign.center,
-                      ),
+                      ],
                     ),
                   ),
                 ),
-              ),
+                FutureBuilder<List<Item>>(future: AdminTotaldata,
+                    builder: (context,projectSnap){
+                  switch(projectSnap.connectionState){
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return CircularProgressIndicator();
+                    default:
+                      if(projectSnap.hasData){
+                        var listdata=projectSnap.data;
 
-              FutureBuilder<List>(future: generateTeacherData(),
-                  builder: (context,projectSnap){
-                    switch(projectSnap.connectionState){
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
-                        return CircularProgressIndicator();
-                      default:
-                        if(projectSnap.hasData){
-                          var listdata=projectSnap.data;
-                          print(listdata![0][0]);
-                          return Card(
-                            elevation: 5,
-                            child: Container(
-                              height: 400,
-                              child: ListView.builder(
-                                  itemCount: listdata.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (_, i) {
-                                    print("item builder $i");
-                                    print("JSD");
-                                    return CustomListTile(
-                                      title: "${listdata[i][2]}",
-                                      message:
-                                      "${listdata[i][3]}",
-                                      date:  "${listdata[i][1]}",
-                                    );
+                        return ExpansionPanelList(
+                          expansionCallback: (int index, bool isExpanded) {
+                            setState(() {
+                              listdata![index].isExpanded = !isExpanded;
+                            });
+                          },
+                          children: listdata!.map<ExpansionPanel>((Item item) {
+                            return ExpansionPanel(
+                              headerBuilder: (BuildContext context, bool isExpanded) {
+                                return ListTile(
+                                  title: Text(item.headerValue, style: TextStyle(fontSize: 18.0,color: isExpanded ? Colors.teal : Colors.black)),
+                                  trailing: Text(item.date),
+                                  subtitle:isExpanded ? Text(""):RichText(
+                                    overflow: TextOverflow.ellipsis,
+                                    strutStyle: StrutStyle(fontSize: 12.0),
+                                    text: TextSpan(
+                                        style: TextStyle(color: Colors.grey.shade500),
+                                        text: item.expandedValue,
+                                  ),
+                                ),);
+                              },
+                              body: Column(
+                                children: <Widget>[
+                                  Container(
+                                      padding: EdgeInsets.only(left: 15.0, right: 30.0, bottom: 15.0),
+                                      child: Text(item.expandedValue, style: TextStyle(wordSpacing: 2.0), textAlign: TextAlign.justify,))
+                                ],
 
-                                  }),
-                            ),
-                          );
-                        }
+                              ),
+                              isExpanded: item.isExpanded,
+                            );
+                          }).toList(),
+                        );
 
-                    }
-                    return Container();
-                  }),
 
-              // Container(
-              //   height: 600,
-              //   child: ListView.builder(
-              //       itemCount: 30,
-              //       shrinkWrap: true,
-              //       itemBuilder: (_, i) {
-              //         return Card(
-              //           elevation: 3,
-              //           child: ListTile(
-              //             title: Text("This is item #$i"),
-              //             subtitle: Text("2021-06-4 14:07:44"),
-              //             trailing: IconButton(
-              //               icon: Icon(Icons.message),
-              //               onPressed: () {},
-              //             ),
-              //           ),
-              //         );
-              //       }),
-              // ),
-            ],
+                        //   Card(
+                        //   elevation: 5,
+                        //   child: Container(
+                        //     height: 400,
+                        //     child: ListView.builder(
+                        //         itemCount: listdata.length,
+                        //         shrinkWrap: true,
+                        //         itemBuilder: (_, i) {
+                        //           print("item builder $i");
+                        //           print("JSD");
+                        //           return CustomListTile(
+                        //             title: "${listdata[i][2]}",
+                        //             message:
+                        //             "${listdata[i][3]}",
+                        //             date:  "${listdata[i][1]}",
+                        //           );
+                        //
+                        //         }),
+                        //   ),
+                        // );
+                      }
+
+                  }
+                  return Container();
+                }),
+                SizedBox(
+                  height: getProportionateScreenWidth(20, context),
+                ),
+                SizedBox(
+                  height: getProportionateScreenWidth(20, context),
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16, right: 16, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "Teacher Announcement",
+                          style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+
+
+                FutureBuilder<List<Item>>(future: TeacherTotaldata,
+                    builder: (context,projectSnap){
+                      switch(projectSnap.connectionState){
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return CircularProgressIndicator();
+                        default:
+                          if(projectSnap.hasData){
+                            var listdata=projectSnap.data;
+                            return ExpansionPanelList(
+                              expansionCallback: (int index, bool isExpanded) {
+                                setState(() {
+                                  listdata![index].isExpanded = !isExpanded;
+                                });
+                              },
+                              children: listdata!.map<ExpansionPanel>((Item item) {
+                                return ExpansionPanel(
+                                  headerBuilder: (BuildContext context, bool isExpanded) {
+                                    return ListTile(
+                                      title: Text(item.headerValue, style: TextStyle(fontSize: 18.0,color: isExpanded ? Colors.teal : Colors.black)),
+                                      trailing: Text(item.date),
+                                      subtitle:isExpanded ? Text(""):RichText(
+                                        overflow: TextOverflow.ellipsis,
+                                        strutStyle: StrutStyle(fontSize: 12.0),
+                                        text: TextSpan(
+                                          style: TextStyle(color: Colors.grey.shade500),
+                                          text: item.expandedValue,
+                                        ),
+                                      ),);
+                                  },
+                                  body: Column(
+                                    children: <Widget>[
+                                      Container(
+                                          padding: EdgeInsets.only(left: 15.0, right: 30.0, bottom: 15.0),
+                                          child: Text(item.expandedValue, style: TextStyle(wordSpacing: 2.0), textAlign: TextAlign.justify,))
+                                    ],
+
+                                  ),
+                                  isExpanded: item.isExpanded,
+                                );
+                              }).toList(),
+                            );
+
+                            //   Card(
+                            //   elevation: 5,
+                            //   child: Container(
+                            //     height: 400,
+                            //     child: ListView.builder(
+                            //         itemCount: listdata.length,
+                            //         shrinkWrap: true,
+                            //         itemBuilder: (_, i) {
+                            //           print("item builder $i");
+                            //           print("JSD");
+                            //           return CustomListTile(
+                            //             title: "${listdata[i][2]}",
+                            //             message:
+                            //             "${listdata[i][3]}",
+                            //             date:  "${listdata[i][1]}",
+                            //           );
+                            //
+                            //         }),
+                            //   ),
+                            // );
+                          }
+
+                      }
+                      return Container();
+                    }),
+
+              ],
+            ),
           ),
-        ),
-      ),
     );
   }
 }
