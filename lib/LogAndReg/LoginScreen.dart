@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:sped_mobile_app/Globals/globals.dart' as globals;
 import 'package:sped_mobile_app/Dashboard/DashboardScreen.dart';
-import 'package:sped_mobile_app/LogAndReg/RegisterScreen.dart';
 import 'package:sped_mobile_app/tool.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -136,6 +135,8 @@ class _SignFormState extends State<SignForm> {
             if(!results.isEmpty){
               for(var row in results) {
                 globals.userid = "${row[1]}";
+                globals.userName = "${row[4]}, ${row[2]} ${row[3]}";
+                globals.section="${row[9]}";
               }
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => DashboardScreen()));
@@ -153,24 +154,6 @@ class _SignFormState extends State<SignForm> {
         ),
         SizedBox(
           height: getProportionateScreenWidth(20, context),
-        ),
-        RichText(
-          text: TextSpan(
-            style: TextStyle(color: Colors.grey, fontSize: 15.0),
-            children: <TextSpan>[
-              TextSpan(text: "Don't have an Account? "),
-              TextSpan(
-                  text: 'Sign Up',
-                  style: TextStyle(color: Colors.blue),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterScreen()));
-                    }),
-            ],
-          ),
         ),
       ],
     ));

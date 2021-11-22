@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:sped_mobile_app/Globals/globals.dart' as globals;
+import 'package:sped_mobile_app/SideDrawer.dart';
+import 'package:sped_mobile_app/tool.dart';
 
 class ChatDetail extends StatefulWidget {
   String name;
@@ -25,6 +27,7 @@ class ChatDetail extends StatefulWidget {
 
 class _ChatDetailState extends State<ChatDetail> {
   late StreamController<List<ChatMessage>> _streamMessages;
+
   void getJsonData() async {
     var timeList = [];
     late List<ChatMessage> messages = [];
@@ -105,7 +108,6 @@ class _ChatDetailState extends State<ChatDetail> {
     // timeList.sort((a, b) => a.compareTo(b));
     // print(timeList);
 
-
     // print("total message: $totalmessages");
     totalmessages.sort((a, b) => a[1].compareTo(b[1]));
 
@@ -132,6 +134,7 @@ class _ChatDetailState extends State<ChatDetail> {
     keepScrollOffset: true,
   );
   FocusNode _focusNode = new FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -146,22 +149,41 @@ class _ChatDetailState extends State<ChatDetail> {
     _focusNode.removeListener(_focusNodeListener);
     super.dispose();
   }
-  Future<Null> _focusNodeListener() async {
-    if (_focusNode.hasFocus){
-      print('TextField got the focus');
 
+  Future<Null> _focusNodeListener() async {
+    if (_focusNode.hasFocus) {
+      print('TextField got the focus');
     } else {
       print('TextField lost the focus');
     }
   }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: SideDrawer(state: "Teacher Consultation"),
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        elevation: 0,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              getJsonData();
+              _streamMessages = StreamController<List<ChatMessage>>();
+              _focusNode.addListener(_focusNodeListener); // do something
+            },
+            child: Container(
+              color: hexToColor("#2c3136"),
+              child: Icon(Icons.repeat,color: hexToColor("#2c3136"),),
+            ),
+          ),
+        ],
+        iconTheme: IconThemeData(color: Colors.white),
+        elevation: 3,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+          backgroundColor: hexToColor("#2c3136"),
         flexibleSpace: SafeArea(
           child: Container(
             padding: EdgeInsets.only(right: 16),
@@ -169,11 +191,11 @@ class _ChatDetailState extends State<ChatDetail> {
               children: <Widget>[
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    _scaffoldKey.currentState!.openDrawer();
                   },
                   icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
+                    Icons.menu,
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -193,7 +215,7 @@ class _ChatDetailState extends State<ChatDetail> {
                     children: <Widget>[
                       Text(
                         widget.name,
-                        style: TextStyle(
+                        style: TextStyle(color: Colors.white,
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(
@@ -213,17 +235,18 @@ class _ChatDetailState extends State<ChatDetail> {
         ),
       ),
       body: Column(children: <Widget>[
-        Flexible(fit: FlexFit.tight,
+        Flexible(
+          fit: FlexFit.tight,
           child: StreamBuilder<List<ChatMessage>>(
               stream: _streamMessages.stream,
               builder: (contexts, projectsnap) {
-                switch(projectsnap.connectionState){
+                switch (projectsnap.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
                   default:
-                    if(projectsnap.hasData){
-                      var chatdata=projectsnap.data;
+                    if (projectsnap.hasData) {
+                      var chatdata = projectsnap.data;
                       return Container(
                         height: MediaQuery.of(context).size.height / 1.24,
                         child: SingleChildScrollView(
@@ -236,16 +259,18 @@ class _ChatDetailState extends State<ChatDetail> {
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Container(
-                                padding:
-                                EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+                                padding: EdgeInsets.only(
+                                    left: 14, right: 14, top: 10, bottom: 10),
                                 child: Align(
-                                  alignment: (chatdata[index].messageType == "receiver"
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
+                                  alignment:
+                                      (chatdata[index].messageType == "receiver"
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: (chatdata[index].messageType == "receiver"
+                                      color: (chatdata[index].messageType ==
+                                              "receiver"
                                           ? Colors.grey.shade200
                                           : Colors.blue[200]),
                                     ),
@@ -266,7 +291,6 @@ class _ChatDetailState extends State<ChatDetail> {
                 return Container();
               }),
         ),
-
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -280,7 +304,8 @@ class _ChatDetailState extends State<ChatDetail> {
                   width: 15,
                 ),
                 Expanded(
-                  child: TextField(focusNode: _focusNode,
+                  child: TextField(
+                    focusNode: _focusNode,
                     controller: myController,
                     decoration: InputDecoration(
                         hintText: "Write message...",
@@ -292,16 +317,24 @@ class _ChatDetailState extends State<ChatDetail> {
                   width: 15,
                 ),
                 FloatingActionButton(
-                  onPressed: ()  async{
-                    final conn = await MySqlConnection.connect(ConnectionSettings(
+                  onPressed: () async {
+                    final conn =
+                        await MySqlConnection.connect(ConnectionSettings(
                       host: '10.0.2.2',
                       port: 3306,
                       user: 'root',
                       db: 'db_aims',
                     ));
-                    DateTime dt= DateTime.now();
-                    var result = await conn.query('INSERT INTO feedback (message_from,message_to,title,message,time_of_message) values (?,?,?,?,?)',
-                        [globals.userid, widget.id,"Dummy",myController.text,dt.toUtc()]);
+                    DateTime dt = DateTime.now();
+                    var result = await conn.query(
+                        'INSERT INTO feedback (message_from,message_to,title,message,time_of_message) values (?,?,?,?,?)',
+                        [
+                          globals.userid,
+                          widget.id,
+                          "Dummy",
+                          myController.text,
+                          dt.toUtc()
+                        ]);
                     setState(() {
                       myController.clear();
                       getJsonData();

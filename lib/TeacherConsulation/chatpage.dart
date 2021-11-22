@@ -3,7 +3,7 @@ import 'package:mysql1/mysql1.dart';
 import 'package:sped_mobile_app/SideDrawer.dart';
 import 'package:sped_mobile_app/TeacherConsulation/conversationlist.dart';
 import 'package:sped_mobile_app/tool.dart';
-
+import 'package:sped_mobile_app/Globals/globals.dart' as globals;
 class ChartPage extends StatefulWidget {
   const ChartPage({Key? key}) : super(key: key);
 
@@ -23,7 +23,7 @@ class _ChartPageState extends State<ChartPage> {
     ));
     List dataList;
     var results = await conn
-        .query('SELECT * FROM teachers');
+        .query('SELECT * FROM teachers WHERE section = "${globals.section}" ');
     dataList = List.generate(results.length, (i) => ["","","",""],growable: false);
     int i = 0;
     int j = 0;

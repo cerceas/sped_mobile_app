@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
+import 'package:sped_mobile_app/Academic%20Performance/PerformanceScreen.dart';
 import 'package:sped_mobile_app/Attendance/AttendanceScreen.dart';
 import 'package:sped_mobile_app/Dashboard/DashboardScreen.dart';
-import 'package:sped_mobile_app/LogAndReg/LoginScreen.dart';
+
+import 'package:sped_mobile_app/SchoolCurriculum/CurriculumScreen.dart';
+import 'package:sped_mobile_app/TeacherConsulation/chatdetail.dart';
 import 'package:sped_mobile_app/TeacherConsulation/chatpage.dart';
 import 'package:sped_mobile_app/tool.dart';
 
+import 'package:sped_mobile_app/Globals/globals.dart' as globals;
 class SideDrawer extends StatefulWidget {
   String state;
 
@@ -41,9 +46,15 @@ class _SideDrawerState extends State<SideDrawer> {
                         ),
                       ),
                     ),
+
                   ],
                 ),
               ),
+            ),
+           Center(child: Text("${globals.userName}",style: TextStyle(color: Colors.white,
+               fontSize: 18, fontFamily: "Roboto"),),),
+            SizedBox(
+              height: getProportionateScreenWidth(15, context),
             ),
             CustomListTile(
               title: "Dashboard",
@@ -88,13 +99,47 @@ class _SideDrawerState extends State<SideDrawer> {
             CustomListTile(
               title: "Teacher Consultation",
               icon: Icons.mail_outline_rounded,
-              onTap: () {
+              onTap: () async {
+                final conn = await MySqlConnection.connect(ConnectionSettings(
+                  host: '10.0.2.2',
+                  port: 3306,
+                  user: 'root',
+                  db: 'db_aims',
+                ));
+                List dataList;
+                var results = await conn
+                    .query('SELECT * FROM teachers WHERE section = "${globals.section}" ');
+                dataList = List.generate(results.length, (i) => ["","","",""],growable: false);
+                int i = 0;
+                int j = 0;
+                for (var row in results) {
+                  print(row);
+                  while (j < 4) {
+                    if(j==0){
+                      //teacherid
+                      dataList[i][j] = "${row[1]}";
+                    }else if(j==1){
+                      //name
+                      dataList[i][j] = "${row[2]} ${row[3]} ${row[4]}";
+                    }else if(j==2){
+                      dataList[i][j] = "${row[5]}";
+                    }
+                    else if(j==3){
+                      dataList[i][j] = "${row[7]}";
+                    }
+                    j++;
+                  }
+                  i++;
+                  j = 0;
+                }
+
                 widget.state == "Teacher Consultation"
                     ? Navigator.of(context).pop()
                     : Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (c, a1, a2) => ChartPage(),
+                    pageBuilder: (c, a1, a2) => ChatDetail(id:dataList[0][0],name:  dataList[0][1],
+                      imageUrl: dataList[0][3] == "Male" ? "assets/image/man.png" : "assets/image/woman.png",email: dataList[0][2]),
                     transitionsBuilder: (c, anim, a2, child) =>
                         FadeTransition(opacity: anim, child: child),
                     transitionDuration: Duration(milliseconds: 500),
@@ -110,7 +155,17 @@ class _SideDrawerState extends State<SideDrawer> {
               title: "School Curriculum",
               icon: Icons.work_outline_rounded,
               onTap: () {
-                print("School");
+                widget.state == "School Curriculum"
+                    ? Navigator.of(context).pop()
+                    : Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (c, a1, a2) => SchoolCurriculum(),
+                    transitionsBuilder: (c, anim, a2, child) =>
+                        FadeTransition(opacity: anim, child: child),
+                    transitionDuration: Duration(milliseconds: 500),
+                  ),
+                );
               },
             ),
             SizedBox(
@@ -120,7 +175,16 @@ class _SideDrawerState extends State<SideDrawer> {
               title: "Academic Performance",
               icon: Icons.assignment,
               onTap: () {
-                print("HELLOW");
+                widget.state == "Academic Performance"
+                    ? Navigator.of(context).pop()
+                    : Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                    pageBuilder: (c, a1, a2) => AcadPerformance(),
+                transitionsBuilder: (c, anim, a2, child) =>
+                FadeTransition(opacity: anim, child: child),
+                transitionDuration: Duration(milliseconds: 500),
+                ),);
               },
             ),
           ],
