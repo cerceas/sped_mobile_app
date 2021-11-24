@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sped_mobile_app/Academic%20Performance/QuarterModel.dart';
+import 'package:sped_mobile_app/Academic%20Performance/TeacherRecommendation.dart';
 import 'package:sped_mobile_app/LogAndReg/LoginScreen.dart';
 import 'package:sped_mobile_app/SideDrawer.dart';
 import 'package:sped_mobile_app/tool.dart';
@@ -15,7 +17,6 @@ class _AcadPerformanceState extends State<AcadPerformance> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       drawer: SideDrawer(state: "Academic Performance"),
       appBar: AppBar(
         actions: [
@@ -45,132 +46,12 @@ class _AcadPerformanceState extends State<AcadPerformance> {
           SizedBox(
             height: 60,
           ),
-          AcadPerBody(),
-          SizedBox(
-            height: 18,
-          ),
-      Container(
-        height: 180,
-        width: 180,
-        child: Flexible(
-          child: Material(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              color: Colors.blue[700],
-              elevation: 10,
-              child: InkWell(
-                onTap: (){},
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/image/finals.png",
-                        width: 100,
-                        fit: BoxFit.fitWidth,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                       "Finals",
-                        style:TextStyle(
-                            color: Colors.green[100],
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-          ),
-        ),
-      )
+          AcadPerformBody(),
         ],
       ),
     );
   }
 }
-class AcadPerBody extends StatelessWidget {
-   AcadPerBody({Key? key}) : super(key: key);
-  Items item1 = new Items(
-    title: "First Quarter",
-    img: "assets/image/books.png",
-    toch: () {
-
-    },
-  );
-
-  Items item2 = new Items(
-    title: "Second Quarter",
-    img: "assets/image/rulers.png",
-    toch: () {
-
-    },
-  );
-  Items item3 = new Items(
-    title: "Third Quarter",
-    img: "assets/image/globe.png",
-    toch: () {
-
-    },
-  );
-  Items item4 = new Items(
-    title: "Fourth Quarter",
-    img: "assets/image/board.png",
-    toch:() {
-
-    },
-  );
-  @override
-  Widget build(BuildContext context) {
-    List<Items> myList = [item1, item2, item3, item4];
-      return Flexible(child: GridView.count(
-        childAspectRatio: 1.0,
-        padding: EdgeInsets.only(left: 16, right: 16),
-        crossAxisCount: 2,
-        crossAxisSpacing: 18,
-        shrinkWrap: true,
-        mainAxisSpacing: 18,
-        children: myList.map((data) {
-          return Material(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              color: Colors.blue[700],
-              elevation: 10,
-              child: InkWell(
-                onTap: data.toch,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        data.img,
-                        width: 100,
-                        fit: BoxFit.fitWidth,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        data.title,
-                        style:TextStyle(
-                            color: Colors.green[100],
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-          );
-        }).toList()),
-    );
-  }
-}
-
 class AcadPerformBody extends StatefulWidget {
   const AcadPerformBody({Key? key}) : super(key: key);
 
@@ -182,45 +63,71 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
   Items item1 = new Items(
     title: "First Quarter",
     img: "assets/image/books.png",
-    toch: () {
-
+    toch: (context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => QuarterModel(quarter: "First Quarter",intQuarter: 1,)),
+      );
     },
   );
 
   Items item2 = new Items(
     title: "Second Quarter",
     img: "assets/image/rulers.png",
-    toch: () {
-
+    toch: (context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => QuarterModel(quarter: "Second Quarter",intQuarter: 2,)),
+      );
     },
   );
   Items item3 = new Items(
     title: "Third Quarter",
     img: "assets/image/globe.png",
-    toch: () {
-
+    toch: (context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => QuarterModel(quarter: "Third Quarter",intQuarter: 3,)),
+      );
     },
   );
   Items item4 = new Items(
     title: "Fourth Quarter",
     img: "assets/image/board.png",
-    toch:() {
-
+    toch:(context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => QuarterModel(quarter: "Fourth Quarter",intQuarter: 4,)),
+      );
     },
   );
   Items item5 = new Items(
     title: "Finals",
     img: "assets/image/finals.png",
-    toch:() {
-
+    toch:(context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => QuarterModel(quarter: "Finals", intQuarter: 5,)),
+      );
     },
   );
+  Items item6 = new Items(
+    title: "Teacher's Recommendation",
+    img: "assets/image/recommendation.png",
+    toch:(context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => TeacherRecom(quarter: "Teacher's Recommendation")),
+      );
+    },
+  );
+
   late List<Items> myList;
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   myList = [item1, item2, item3, item4,item5];
+   myList = [item1, item2, item3, item4,item5,item6];
   }
   @override
   Widget build(BuildContext context) {
@@ -229,6 +136,7 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
         childAspectRatio: 1.0,
         padding: EdgeInsets.only(left: 16, right: 16),
         crossAxisCount: 2,
+        shrinkWrap: true,
         crossAxisSpacing: 18,
         mainAxisSpacing: 18,
         children: myList.map((data) {
@@ -239,7 +147,9 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
               color: Colors.blue[700],
               elevation: 10,
               child: InkWell(
-                onTap: data.toch,
+                onTap:(){
+                  data.toch(context);
+                } ,
                 child: Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -253,7 +163,7 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
                         height: 10,
                       ),
                       Text(
-                        data.title,
+                        data.title,textAlign: TextAlign.center,
                         style:TextStyle(
                                 color: Colors.green[100],
                                 fontSize: 16,
@@ -271,6 +181,6 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
 class Items {
   String title;
   String img;
-  GestureTapCallback toch;
+  Function(BuildContext context) toch;
   Items({required this.title,required this.img,required this.toch});
 }

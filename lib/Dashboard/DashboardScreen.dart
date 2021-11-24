@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:sped_mobile_app/Globals/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -381,64 +380,3 @@ class _DashboardTeacherState extends State<DashboardTeacher> {
 
 
 
-class CustomListTile extends StatefulWidget {
-  String title;
-  String message;
-  String date;
-
-  CustomListTile({required this.title, required this.message,required this.date});
-
-  @override
-  _CustomListTileState createState() => _CustomListTileState();
-}
-
-class _CustomListTileState extends State<CustomListTile> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 0, 0.0, 0),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.grey.shade500,
-            border: Border(bottom: BorderSide(color: Colors.grey))),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Image.asset(
-                  "assets/image/loudspeaker.png",
-                  width: 24,
-                  height: 24,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      widget.date,
-                      style: TextStyle(fontSize: 12, color: Colors.black),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                      child: Text(
-                        widget.title,
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 20.0),
-              child: Text(
-                widget.message,
-                style: TextStyle(fontSize: 13, color: Colors.black),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
