@@ -170,9 +170,12 @@ class _ChatDetailState extends State<ChatDetail> {
         actions: [
           GestureDetector(
             onTap: () {
-              getJsonData();
-              _streamMessages = StreamController<List<ChatMessage>>();
-              _focusNode.addListener(_focusNodeListener); // do something
+              setState(() {
+                getJsonData();
+                _streamMessages = StreamController<List<ChatMessage>>();
+                _focusNode.addListener(_focusNodeListener);
+              });
+             // do something
             },
             child: Container(
               color: hexToColor("#2c3136"),
