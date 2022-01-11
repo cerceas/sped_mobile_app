@@ -140,6 +140,11 @@ class _SignFormState extends State<SignForm> {
               }
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => DashboardScreen()));
+            }else{
+              showDialog(
+                  context: context,
+                  builder: (_) => ImageDialog(check: "Outside fail",)
+              );
             }
 
             print(results);

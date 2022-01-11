@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:sped_mobile_app/Academic%20Performance/PerformanceScreen.dart';
 import 'package:sped_mobile_app/Attendance/AttendanceScreen.dart';
+import 'package:sped_mobile_app/ChangePassword/ChangePassScreen.dart';
 import 'package:sped_mobile_app/Dashboard/DashboardScreen.dart';
 
 import 'package:sped_mobile_app/SchoolCurriculum/CurriculumScreen.dart';
@@ -185,6 +186,24 @@ class _SideDrawerState extends State<SideDrawer> {
                 FadeTransition(opacity: anim, child: child),
                 transitionDuration: Duration(milliseconds: 500),
                 ),);
+              },
+            ),SizedBox(
+              height: getProportionateScreenWidth(20, context),
+            ),
+            CustomListTile(
+              title: "Change Password",
+              icon: Icons.vpn_key_outlined,
+              onTap: () {
+                widget.state == "Change Password"
+                    ? Navigator.of(context).pop()
+                    : Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (c, a1, a2) => ChangePScreen(),
+                    transitionsBuilder: (c, anim, a2, child) =>
+                        FadeTransition(opacity: anim, child: child),
+                    transitionDuration: Duration(milliseconds: 500),
+                  ),);
               },
             ),
           ],
