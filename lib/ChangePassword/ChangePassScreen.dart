@@ -60,26 +60,24 @@ class _ChangePBodyState extends State<ChangePBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: SizedBox(
-          width: double.infinity,
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(20, context)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Flexible(
-                  // your image goes here which will take as much height as possible.
-                  child: Image.asset('assets/image/bagongNLogo.png', fit: BoxFit.contain),
-                ),
-                SizedBox(
-                  height: getProportionateScreenWidth(20, context),
-                ),
-                SignForm(),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+
+                  Image.asset('assets/image/bagongNLogo.png', fit: BoxFit.contain),
+                  SizedBox(
+                    height: getProportionateScreenWidth(20, context),
+                  ),
+                  SignForm(),
+                ],
+              ),
             ),
           ),
-        ));
+        );
   }
 
 }
@@ -194,7 +192,7 @@ class _SignFormState extends State<SignForm> {
             ),
             ElevatedButton(
               style: style,
-              onPressed: doesntMatchPass==false && newPass.text.isNotEmpty ? () async {
+              onPressed: doesntMatchPass==false && (newPass.text.isNotEmpty || passTxtfld.text.isNotEmpty) ? () async {
                 final conn = await MySqlConnection.connect(ConnectionSettings(
                   host: '10.0.2.2',
                   port: 3306,
@@ -252,7 +250,7 @@ class _SignFormState extends State<SignForm> {
       labelStyle: TextStyle(color: Colors.black),
       hintText: hint,
         errorStyle: TextStyle(),
-        errorText: wrongpass ? label =="Old Password" ?'Wrong Password': doesntMatchPass ? label == "Confirm Password" ? "Doesn't match":null:null:null,
+        errorText: wrongpass ? label =="Old Password" ?'Wrong Password':null:doesntMatchPass ? label == "Confirm Password" ? "Doesn't match":null:null,
       hintStyle: TextStyle(color: Colors.black,fontSize: 15),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       prefixIcon: Icon(
