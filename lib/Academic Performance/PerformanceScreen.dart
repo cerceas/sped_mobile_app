@@ -101,16 +101,6 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
       );
     },
   );
-  Items item5 = new Items(
-    title: "Finals",
-    img: "assets/image/finals.png",
-    toch:(context) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => QuarterModel(quarter: "Finals", intQuarter: 5,)),
-      );
-    },
-  );
   Items item6 = new Items(
     title: "Teacher's Recommendation",
     img: "assets/image/recommendation.png",
@@ -127,7 +117,7 @@ class _AcadPerformBodyState extends State<AcadPerformBody> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   myList = [item1, item2, item3, item4,item5,item6];
+   myList = [item1, item2, item3, item4,item6];
   }
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mysql1/mysql1.dart';
@@ -206,6 +208,8 @@ class _Attendance_bodyState extends State<Attendance_body> {
       user: 'root',
       db: 'db_aims',
     ));
+
+
     var resultsAbsent = await conn.query(
         'SELECT * FROM attendance WHERE student_id="${globals.userid}"  && status ="ABSENT"');
     var resultsPresent = await conn.query(

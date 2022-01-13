@@ -184,7 +184,7 @@ class _ProgressReportState extends State<ProgressReport> {
     }
     for (int i = 0; i < dataList.length; i++) {
       for (int j = 0; j < 1; j++) {
-        print(dataList[i][j]);
+
         _data_item.add(Item(
             expandedValue: dataList[i][j + 2],
             headerValue: dataList[i][j],
@@ -192,6 +192,39 @@ class _ProgressReportState extends State<ProgressReport> {
             date: dataList[i][j + 1]));
       }
     }
+    var addResults = await conn.query(
+        'SELECT * FROM 	report WHERE level="${globals.section}"');
+    List removedData=[];
+    for(var row in addResults){
+
+      bool cond=true;
+      for(int i=0;i<_data_item.length;i++){
+        print(row[1]);
+        print(_data_item.length);
+        if(_data_item[i].headerValue == row[1]){
+          print("Match");
+          if(row[3] == 0){
+            removedData.add(_data_item[i].headerValue);
+            _data_item.remove(_data_item[i]);
+            print("Match inside");
+          }
+          cond=false;
+        }else if(i==_data_item.length-1 && cond){
+          if(!removedData.contains(_data_item[i].headerValue)) {
+            print(removedData);
+            print(row[1]);
+            print("inside darrk");
+            _data_item.add(
+                Item(expandedValue: "", headerValue: row[1], date: ""));
+            print("Match Outside");
+          }
+        }
+      }
+
+    }
+
+
+
     return _data_item;
   }
 

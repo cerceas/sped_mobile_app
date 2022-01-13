@@ -37,24 +37,59 @@ class TeacherBody extends StatefulWidget {
 }
 
 class _TeacherBodyState extends State<TeacherBody> {
-  late Future<String> teacherRecom;
+  late Future<List<String>> teacherRecom;
 
-  Future<String> generateRecom() async {
+  Future<List<String>> generateRecom() async {
     final conn = await MySqlConnection.connect(ConnectionSettings(
       host: '10.0.2.2',
       port: 3306,
       user: 'root',
       db: 'db_aims',
     ));
-
+    List<String> dataList=[];
     var results = await conn.query(
-        'SELECT * FROM 	grades_report_card WHERE student_id="${globals.userid}" and quarter="${5}"');
-    late String output;
+        'SELECT * FROM 	grades_report_card WHERE student_id="${globals.userid}" and quarter="${1}"');
+
+    String group="";
     for (var row in results) {
-      output = "${row[7]}";
+      if(row[7]!=""&&!group.contains(row[7])) {
+        group = "$group " + "${row[7]},\n";
+      }
+    }
+    var results2 = await conn.query(
+        'SELECT * FROM 	grades_report_card WHERE student_id="${globals.userid}" and quarter="${2}"');
+
+    String group2="";
+    for (var row in results2) {
+      if(row[7]!=""&&!group2.contains(row[7])) {
+        group2 = "$group2 " + "${row[7]},\n";
+      }
+    }
+    var results3 = await conn.query(
+        'SELECT * FROM 	grades_report_card WHERE student_id="${globals.userid}" and quarter="${3}"');
+
+    String group3="";
+    for (var row in results3) {
+      if(row[7]!=""&&!group3.contains(row[7])) {
+        group3 = "$group3 " + "${row[7]},\n";
+      }
+    }
+    var results4 = await conn.query(
+        'SELECT * FROM 	grades_report_card WHERE student_id="${globals.userid}" and quarter="${4}"');
+
+    String group4="";
+    for (var row in results4) {
+      if(row[7]!=""&&!group4.contains(row[7])) {
+        group4 = "$group4 " + "${row[7]},\n";
+      }
     }
 
-    return output;
+    dataList.add(group);
+    dataList.add(group2);
+    dataList.add(group3);
+    dataList.add(group4);
+    print(dataList);
+    return dataList;
   }
 
   @override
@@ -114,73 +149,78 @@ class _TeacherBodyState extends State<TeacherBody> {
                   SizedBox(
                     height: 20,
                   ),
-                  FutureBuilder<String>(
+                  FutureBuilder<List<String>>(
                       future: teacherRecom,
                       builder: (context, projectSnap) {
                         switch (projectSnap.connectionState) {
                           case ConnectionState.none:
                           case ConnectionState.waiting:
-                          return Center(child: CircularProgressIndicator());
+                            return Center(child: CircularProgressIndicator());
                           default:
-                          if (projectSnap.hasData) {
-                            String? remarks=projectSnap.data;
-                            return DataTable(dataRowHeight: 150, columnSpacing: 2, columns: [
-                              DataColumn(
-                                  label: Text('Quarter',
-                                      style: TextStyle(
-                                          fontSize: 20, fontWeight: FontWeight.bold))),
-                              DataColumn(
-                                  label: Text('',
-                                      style: TextStyle(
-                                          fontSize: 20, fontWeight: FontWeight.bold))),
-                            ], rows: [
-                              DataRow(cells: [
-                                DataCell(Text('First Quarter',
-                                    style: TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold))),
-                                DataCell(SizedBox(
-                                  width: 290,
-                                  child: Text(
-                                      "$remarks"),
-                                )),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('Second Quarter',
-                                    style: TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold))),
-                                DataCell(SizedBox(
-                                  width: 290,
-                                  child: Text(
-                                      "$remarks"),
-                                )),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('Third Quarter',
-                                    style: TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold))),
-                                DataCell(SizedBox(
-                                  width: 290,
-                                  child: Text(
-                                      "$remarks"),
-                                )),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('Fourth Quarter',
-                                    style: TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold))),
-                                DataCell(SizedBox(
-                                  width: 290,
-                                  child: Text(
-                                      "$remarks"),
-                                )),
-                              ]),
-                            ]);
-                          }else{
-                            return Container();
-                          }
+                            if (projectSnap.hasData) {
+                              var remarks = projectSnap.data;
+                              return DataTable(
+                                  dataRowHeight: 150,
+                                  columnSpacing: 2,
+                                  columns: [
+                                    DataColumn(
+                                        label: Text('Quarter',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold))),
+                                  ],
+                                  rows: [
+                                    DataRow(cells: [
+                                      DataCell(Text('First Quarter',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold))),
+                                      DataCell(SizedBox(
+                                        width: 290,
+                                        child: Text("${remarks![0]}"),
+                                      )),
+                                    ]),
+                                    DataRow(cells: [
+                                      DataCell(Text('Second Quarter',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold))),
+                                      DataCell(SizedBox(
+                                        width: 290,
+                                        child: Text("${remarks[1]}"),
+                                      )),
+                                    ]),
+                                    DataRow(cells: [
+                                      DataCell(Text('Third Quarter',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold))),
+                                      DataCell(SizedBox(
+                                        width: 290,
+                                        child: Text("${remarks[2]}"),
+                                      )),
+                                    ]),
+                                    DataRow(cells: [
+                                      DataCell(Text('Fourth Quarter',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold))),
+                                      DataCell(SizedBox(
+                                        width: 290,
+                                        child: Text("${remarks[3]}"),
+                                      )),
+                                    ]),
+                                  ]);
+                            } else {
+                              return Container();
+                            }
                         }
                       }),
-
                 ])));
   }
 }
